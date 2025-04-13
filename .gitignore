@@ -1,0 +1,12 @@
+
+# FVM Version Cache
+.fvm/
+# Project exclude paths
+/.dart_tool/
+/build/
+# Генеративные файлы Flutter/Build Runner
+*.g.dart
+# Flutter-generated plugin files
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-plugins-dependencies.json

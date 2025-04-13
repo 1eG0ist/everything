@@ -1,0 +1,4 @@
+enum TopicType {
+  folder,
+  file
+}
