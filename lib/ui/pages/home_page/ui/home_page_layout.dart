@@ -1,9 +1,11 @@
 import 'package:everything/data/enums/topic_type_enum.dart';
 import 'package:everything/data/models/topic_model.dart';
+import 'package:everything/ui/widgets/cards/topic_card.dart';
 import 'package:everything/ui/widgets/dialogs/create_topic_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../widgets/buttons/glass_depressed_fab.dart';
 import '../bloc/home_bloc.dart';
 
 class HomePageLayout extends StatefulWidget {
@@ -14,12 +16,13 @@ class HomePageLayout extends StatefulWidget {
 }
 
 class _HomePageLayoutState extends State<HomePageLayout> {
-  late final HomeBloc _homeBloc;
+  late final HomeBloc _homeBloc = HomeBloc();
 
   @override
   void initState() {
     super.initState();
-    _homeBloc = HomeBloc()..add(LoadTopics());
+    print("Loading");
+    _homeBloc.add(LoadTopics());
   }
 
   @override
@@ -37,21 +40,23 @@ class _HomePageLayoutState extends State<HomePageLayout> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: theme.surface,
-          body: _buildBody(state),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => _showAddTopicDialog(_homeBloc), // Передаем bloc явно
+
+          body: SafeArea(
+            child: switch (state) {
+              HomeLoading() => const Center(child: CircularProgressIndicator()),
+              HomeError(message: var message) => Center(child: Text('Ошибка: $message')),
+              HomeLoaded(topics: var topics) => _buildTopicsList(topics),
+              _ => const Center(child: Text('Начните добавлять заметки'))
+            },
+          ),
+
+          floatingActionButton: GlassDepressedFab(
+            onPressed: () => _showAddTopicDialog(_homeBloc),
             child: const Icon(Icons.add),
           ),
         );
       },
     );
-  }
-
-  Widget _buildBody(HomeState state) {
-    if (state is HomeLoading) return const Center(child: CircularProgressIndicator());
-    if (state is HomeError) return Center(child: Text('Ошибка: ${state.message}'));
-    if (state is HomeLoaded) return _buildTopicsList(state.topics);
-    return const Center(child: Text('Начните добавлять заметки'));
   }
 
   void _showAddTopicDialog(HomeBloc bloc) {
@@ -70,16 +75,22 @@ class _HomePageLayoutState extends State<HomePageLayout> {
   }
 
   Widget _buildTopicsList(List<TopicModel> topics) {
-    return ListView.builder(
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
       itemCount: topics.length,
+      separatorBuilder: (context, index) => SizedBox(height: 4),
       itemBuilder: (context, index) {
         final topic = topics[index];
-        return ListTile(
-          title: Text(topic.title),
-          subtitle: topic.description != null ? Text(topic.description!) : null,
-          trailing: Icon(topic.type == TopicType.folder
-              ? Icons.folder_copy_outlined
-              : Icons.sticky_note_2_outlined),
+        return TopicCard(
+          title: topic.title,
+          description: topic.description,
+          type: topic.type,
+          createdAt: topic.createdAt,
+          updatedAt: topic.updatedAt,
+          onTap: () {
+            print("Tapped: ${topic.title}");
+            // Обработка нажатия
+          },
         );
       },
     );

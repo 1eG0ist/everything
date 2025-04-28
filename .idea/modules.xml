@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/everything.iml" filepath="$PROJECT_DIR$/everything.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/everything_android.iml" filepath="$PROJECT_DIR$/android/everything_android.iml" />
     </modules>
   </component>
 </project>

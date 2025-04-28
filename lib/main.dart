@@ -1,5 +1,6 @@
 import 'package:everything/di/service_locator.dart';
 import 'package:everything/ui/pages/home_page/ui/home_page_layout.dart';
+import 'package:everything/ui/pages/menu_page/menu_page_layout.dart';
 import 'package:everything/ui/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Everything',
       theme: Provider.of<ThemeProvider>(context).themeData,
-      home: const HomePageLayout(),
+      home: const MenuPageLayout(),
     );
   }
 }
